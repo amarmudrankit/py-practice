@@ -457,6 +457,38 @@ class bst:
 
 		return distance
 
+	def node_exists(self, current, search_node):
+		if current == None:
+			return False
+
+		if current.key == search_node.key:
+			return True
+
+		return (self.node_exists(current.left, search_node) or \
+				self.node_exists(current.right, search_node))
+	'''
+	This is the method to find the LCA of 2 nodes for a binary tree
+	'''
+	def generic_lca(self, root, a, b):
+		# Check if both a and b exists in the left subtree of the root
+		if self.node_exists(root.left, a) and \
+		   self.node_exists(root.left, b):
+			return self.generic_lca(root.left, a, b)
+		elif self.node_exists(root.right, a) and \
+			 self.node_exists(root.right, b):
+			return self.generic_lca(root.right, a, b)
+		else:
+			return root
+
+	def find_lca_bt(self, a, b):
+		if self.root == None:
+			return None
+
+		if a == None or b == None:
+			return None
+
+		return self.generic_lca(self.root, a, b)
+
 	def find_lca(self, a, b):
 		if self.root == None:
 			return None
@@ -483,7 +515,9 @@ class bst:
 		dist_b = self.distance_from_root(b)
 
 		lca = self.find_lca(a, b)
+		lca_gen = self.find_lca_bt(a, b)
 		print("LCA of %d and %d is %d" % (a.key, b.key, lca.key))
+		print("Generic LCA of %d and %d is %d" % (a.key, b.key, lca_gen.key))
 		dist_lca = self.distance_from_root(lca)
 
 		return dist_a + dist_b - (2 * dist_lca)
@@ -564,8 +598,8 @@ if __name__ == "__main__":
 	min_ht = bst.min_height()
 	print("Got Max Ht: %d Min Ht: %d" % (max_ht, min_ht))
 
-	#bst.linked_list_per_level()
-	#bst.print_lr_subtrees()
+	bst.linked_list_per_level()
+	bst.print_lr_subtrees()
 
 	# Balance the current tree
 	#bst.balance()
